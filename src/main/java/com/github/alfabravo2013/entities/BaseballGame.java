@@ -1,14 +1,26 @@
 package com.github.alfabravo2013.entities;
 
+import javax.sql.DataSource;
+
 public class BaseballGame implements Game {
     private Team homeTeam;
     private Team awayTeam;
+
+    private DataSource dataSource;
 
     public BaseballGame() {}
 
     public BaseballGame(Team homeTeam, Team awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
