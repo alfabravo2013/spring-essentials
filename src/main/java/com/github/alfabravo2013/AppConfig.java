@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Configuration
 @ComponentScan(basePackages = "com.github.alfabravo2013")
+@EnableAspectJAutoProxy
 public class AppConfig {
 
     @Resource

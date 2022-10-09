@@ -1,5 +1,7 @@
 package com.github.alfabravo2013.entities;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
 public class BaseballGame implements Game {
@@ -53,5 +55,15 @@ public class BaseballGame implements Game {
     @Override
     public String toString() {
         return String.format("Game between %s at %s", awayTeam.getName(), homeTeam.getName());
+    }
+
+    @PostConstruct
+    public void startGame() {
+        System.out.println("Playing national athem");
+    }
+
+    @PreDestroy
+    public void endGame() {
+        System.out.println("Showing highlights");
     }
 }

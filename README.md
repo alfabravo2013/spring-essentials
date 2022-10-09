@@ -33,11 +33,11 @@ class AppConfigProxy extends AppConfig {
     @Override
     public Team royals() {
         if (appContext.contains("royals")) {
-            return appContext.getBean("royals");
+            return appContext.getBean("royals", Team.class);
         } else {
-            super.royals();
-            appContext.add("royals");
-            return "royals";
+            // call super.royals()
+            // put "royals" to appContext
+            // return "royals";
         }
     }
 }
@@ -77,3 +77,24 @@ If a factory method is within a different class, we need to supply a `factory-be
 *This example doesn't work throwing `BeanCreationException` with the reason 
 `"because module java.xml does not export com.sun.org.apache.xerces.internal.jaxp to unnamed module"` but shows the principle.*
 **Absolutely legacy code, should be replaced with Java-based config.**
+
+## Bean initialization and destruction
+
+`@Bean(initMethod="start", destroyMethod="finish")` is one of the ways to define custom initialization and destruction of a bean.
+Both referred methods must not have any arguments and must return `void`.
+
+**Note that Spring doesn't necesserily destroy a bean!** To enforce the destruction, call `ctx.close()` on your context reference.
+**Also, note that init and destroy methods work only if the bean is a singleton!**
+
+Another way is to use `@PostConstruct` and `@PreDestroy` on the methods inside the bean class. 
+They are **standard Java annotations** and are not Spring-bound but **cannot be used if you don't own the code of the class**.
+
+## AOP
+This concept helps to avoid code tangling and code scattering. 
+- Code tangling means that there are multiple unrelated things going on in one method. 
+For example: doing business logic plus writing logs to a file plus checking permissions.
+- Code scattering means repeating the same things in different parts of the application. 
+For example: calling a logger everywhere.
+
+Aspect oriented programming allows to encapsulate such things in a class and apply its functionality in various places.
+This way the code is removed from the business logic and is not repeated elsewhere.
