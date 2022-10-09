@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.text.NumberFormat;
 import java.util.List;
 
 @Configuration
@@ -45,5 +46,10 @@ public class AppConfig {
     @Bean
     public Team royals() {
         return new Royals();
+    }
+
+    @Bean
+    public NumberFormat nf() {
+        return NumberFormat.getCurrencyInstance();
     }
 }
