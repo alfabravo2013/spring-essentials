@@ -10,6 +10,8 @@ public class BaseballGame implements Game {
 
     public BaseballGame() {}
 
+    // Constructor injection is preferred if dependencies are absolutely required
+    // since this way you cannot forget to initialize them
     public BaseballGame(Team homeTeam, Team awayTeam) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -46,5 +48,10 @@ public class BaseballGame implements Game {
     @Override
     public String playGame() {
         return Math.random() < 0.5 ? getHomeTeam().getName() : getAwayTeam().getName();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Game between %s at %s", awayTeam.getName(), homeTeam.getName());
     }
 }
