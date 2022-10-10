@@ -98,3 +98,36 @@ For example: calling a logger everywhere.
 
 Aspect oriented programming allows to encapsulate such things in a class and apply its functionality in various places.
 This way the code is removed from the business logic and is not repeated elsewhere.
+
+## Transaction isolation and propagation
+
+### Isolation levels
+- `READ_UNCOMMITED` means that two transactions working on the same row will see uncommited changes of the other.
+*Note that some of such changes may be rolled back later!* **Pro**: this level doesn't block anything
+and therefore is very fast. **Con**: this is very risky.
+- `READ_COMMITTED` changes made by another transaction may be visible but only once they are committed. However, if
+after querying a row it the row is changed, the changes are not visible (aka phantom reads).
+- `REPEATABLE_READ` guarantees that repeated reads will produce the same result. This requires a lock on the row.
+Phantom reads are still possible if another row is added that otherwise would have been in the result set.
+- `SERIALIZABLE` prevents even phantom reads and requires a table lock.
+- `DEFAULT` - default for the given data source.
+Fast and risky -------->------------->----------->----------> Slow and safe
+`READ_UNCOMMITED` -> `READ_COMMITTED` -> `REPEATABLE_READ` -> `SERIALIZABLE`
+
+**The most common choice in terms of performance vs safety is `READ_COMMITTED`! 
+This is the default level for most databases (see `DEFAULT`)**
+
+### Propagation
+All propagation levels are defined in Java EE, except for `NESTED` which is defined and implemented in Spring.
+- `REQUIRED` is the most common one and means that if a transaction is going, we join it. When the current transaction
+is complete, the control is passed to the caller. If there is no transaction, we create it and run. It's the default level.
+- `REQUIRES_NEW` if a transaction is going, we suspend it and run a new one, and after it's done we resume the first 
+transaction, even if the new transaction was rolled back. If there is no transaction, we create it and run.
+- `SUPPORTS` if there is a transaction running, join it, otherwise do nothing. Read only methods often use this level.
+- `NOT_SUPPORTED` if there is a transaction, suspend it, run the operation outside the transaction, and then resume it.
+It may be used where our method does not need a transaction and may mess up another transaction that is running. If
+there is no transaction, just proceed.
+- `MANDATORY` - if there is a transaction, join it, otherwise throw `TransactionRequiredException`.
+- `NEVER` if there is a transaction, throw an exception, otherwise just proceed.
+- `NESTED` - Spring specific, if there is a transaction, execute within a nested transaction, otherwise behave like
+`REQUIRED`. May be not supported by some data sources. Read docs if need to use it.
